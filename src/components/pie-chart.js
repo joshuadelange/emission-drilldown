@@ -1,10 +1,12 @@
 import Highcharts from 'highcharts'
 import HighchartsDrilldown from 'highcharts/modules/drilldown'
+import HighchartsAccessibility from 'highcharts/modules/accessibility'
 
 import { getTransformedData } from '../data/get-transformed-data'
 
 export function initPieChart (element) {
   HighchartsDrilldown(Highcharts)
+  HighchartsAccessibility(Highcharts)
 
   const data = getTransformedData()
 
@@ -23,7 +25,7 @@ export function initPieChart (element) {
         enabled: true
       },
       point: {
-        valueSuffix: 'tonnes CO2e'
+        valueSuffix: ' tonnes CO2e'
       }
     },
     plotOptions: {
