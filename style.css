@@ -38,12 +38,3 @@ main {
   padding: 2rem;
   text-align: center;
 }
-
-figure {
-  margin: 0;
-}
-
-table {
-  margin-block-start: 2rem;
-  width: 100%;
-}
