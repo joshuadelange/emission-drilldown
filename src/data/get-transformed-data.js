@@ -1,5 +1,9 @@
 import data from './data.json'
 
+/*
+  - summing of emission values
+  - transformation of data structure for easier access
+*/
 export function getTransformedData () {
   return transformScopes(data)
 }
