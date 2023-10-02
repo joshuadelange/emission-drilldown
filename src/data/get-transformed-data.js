@@ -1,6 +1,6 @@
 import data from './data.json';
 
-export function transformData() {    
+export function getTransformedData() {    
     return transformScopes(data);
 }
 
