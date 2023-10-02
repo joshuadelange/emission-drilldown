@@ -50,8 +50,8 @@ export function initPieChart (element) {
 
     drilldown: {
       series: [
-        ...getCategoryDrilldownSeries(data),
-        ...getActivityDrilldownSeries(data)
+        ...getCategorySeries(data),
+        ...getActivitySeries(data)
       ]
     }
   })
@@ -65,9 +65,8 @@ function getScopeSeries (data) {
   }))
 }
 
-function getCategoryDrilldownSeries (data) {
+function getCategorySeries (data) {
   return data.map(scope => ({
-    name: scope.name,
     id: scope.name,
     data: scope.activitiesByCategory.map(category => ({
       name: category.name,
@@ -77,14 +76,16 @@ function getCategoryDrilldownSeries (data) {
   }))
 }
 
-function getActivityDrilldownSeries (data) {
-  return data.map(scope => scope.activitiesByCategory.map(category => {
-    return {
-      id: category.name,
-      data: category.activities.map(activity => ([
-        activity.name,
-        activity.amount
-      ]))
-    }
-  })).flat()
+function getActivitySeries (data) {
+  return data.map(scope => {
+    return scope.activitiesByCategory.map(category => {
+      return {
+        id: category.name,
+        data: category.activities.map(activity => ([
+          activity.name,
+          activity.amount
+        ]))
+      }
+    })
+  }).flat()
 }
