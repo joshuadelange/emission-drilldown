@@ -2,7 +2,6 @@ import Highcharts from 'highcharts'
 import HighchartsDrilldown from 'highcharts/modules/drilldown'
 
 import { getTransformedData } from '../data/get-transformed-data'
-import { clearFilters, setFilters } from '../filters'
 
 export function initPieChart (element) {
   HighchartsDrilldown(Highcharts)
@@ -11,24 +10,13 @@ export function initPieChart (element) {
 
   Highcharts.chart(element, {
     chart: {
-      type: 'pie',
-
-      events: {
-        drilldown: (event) => {
-          setFilters({ scope: event.seriesOptions.name })
-        },
-        drillup: () => {
-          clearFilters()
-        }
-      }
+      type: 'pie'
     },
     title: {
-      text: 'Emissions by Scope',
-      align: 'left'
+      text: 'Emissions by Scope'
     },
     subtitle: {
-      text: 'Click on a scope and categories to filter the emission activities',
-      align: 'left'
+      text: 'Click on a scope and categories to drill down to activities.'
     },
     accessibility: {
       announceNewData: {
@@ -56,28 +44,47 @@ export function initPieChart (element) {
       {
         name: 'Scopes',
         colorByPoint: true,
-        data: data.map(scope => ({
-          name: scope.name,
-          y: scope.sum,
-          drilldown: scope.name
-        }))
+        data: getScopeSeries(data)
       }
     ],
 
     drilldown: {
-      series: data.map(scope => ({
-        name: scope.name,
-        id: scope.name,
-        data: scope.activitiesByCategory.map(category => ([
-          category.name,
-          category.sum
-        ])),
-        events: {
-          click: (event) => {
-            setFilters({ category: event.point.name })
-          }
-        }
-      }))
+      series: [
+        ...getCategoryDrilldownSeries(data),
+        ...getActivityDrilldownSeries(data)
+      ]
     }
   })
+}
+
+function getScopeSeries (data) {
+  return data.map(scope => ({
+    name: scope.name,
+    drilldown: scope.name,
+    y: scope.sum
+  }))
+}
+
+function getCategoryDrilldownSeries (data) {
+  return data.map(scope => ({
+    name: scope.name,
+    id: scope.name,
+    data: scope.activitiesByCategory.map(category => ({
+      name: category.name,
+      drilldown: category.name,
+      y: category.sum
+    }))
+  }))
+}
+
+function getActivityDrilldownSeries (data) {
+  return data.map(scope => scope.activitiesByCategory.map(category => {
+    return {
+      id: category.name,
+      data: category.activities.map(activity => ([
+        activity.name,
+        activity.amount
+      ]))
+    }
+  })).flat()
 }
