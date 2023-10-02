@@ -13,10 +13,10 @@ export function initPieChart (element) {
       type: 'pie'
     },
     title: {
-      text: 'Emissions by Scope'
+      text: 'Emissions by Scope and Category'
     },
     subtitle: {
-      text: 'Click on a scope and categories to drill down to activities.'
+      text: 'Click on scope and category to drill down to activities.'
     },
     accessibility: {
       announceNewData: {
