@@ -4,6 +4,23 @@ export function getTransformedData () {
   return transformScopes(data)
 }
 
+export function getFlatTransformedData () {
+  return getTransformedData().reduce((flatData, scope) => {
+    scope.activitiesByCategory.forEach(category => {
+      category.activities.forEach(activity => {
+        flatData.push({
+          scope: scope.name,
+          category: category.name,
+          activity: activity.name,
+          amount: activity.amount,
+          metric: activity.metric
+        })
+      })
+    })
+    return flatData
+  }, [])
+}
+
 function transformScopes (scopes) {
   return Object.keys(scopes).reduce((transformedData, scope) => {
     const activitiesByCategory = transformCategories(data[scope])

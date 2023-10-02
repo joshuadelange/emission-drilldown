@@ -2,6 +2,7 @@ import Highcharts from 'highcharts'
 import HighchartsDrilldown from 'highcharts/modules/drilldown'
 
 import { getTransformedData } from '../data/get-transformed-data'
+import { clearFilters, setFilters } from '../filters'
 
 export function initPieChart (element) {
   HighchartsDrilldown(Highcharts)
@@ -10,13 +11,24 @@ export function initPieChart (element) {
 
   Highcharts.chart(element, {
     chart: {
-      type: 'pie'
+      type: 'pie',
+
+      events: {
+        drilldown: (event) => {
+          setFilters({ scope: event.seriesOptions.name })
+        },
+        drillup: () => {
+          clearFilters()
+        }
+      }
     },
     title: {
-      text: 'Emissions by Scope'
+      text: 'Emissions by Scope',
+      align: 'left'
     },
     subtitle: {
-      text: 'Click on a scope to show the emissions by category'
+      text: 'Click on a scope and categories to filter the emission activities',
+      align: 'left'
     },
     accessibility: {
       announceNewData: {
@@ -59,7 +71,12 @@ export function initPieChart (element) {
         data: scope.activitiesByCategory.map(category => ([
           category.name,
           category.sum
-        ]))
+        ])),
+        events: {
+          click: (event) => {
+            setFilters({ category: event.point.name })
+          }
+        }
       }))
     }
   })
